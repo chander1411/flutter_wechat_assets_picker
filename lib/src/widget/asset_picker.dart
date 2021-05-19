@@ -9,6 +9,12 @@ import 'package:flutter/services.dart';
 
 import '../constants/constants.dart';
 
+enum ScreenOrientation {
+  portraitOnly,
+  landscapeOnly,
+  rotating,
+}
+
 class AssetPicker<A, P> extends StatelessWidget {
   const AssetPicker({
     Key? key,
@@ -21,6 +27,7 @@ class AssetPicker<A, P> extends StatelessWidget {
   /// 跳转至选择器的静态方法
   static Future<List<AssetEntity>?> pickAssets(
     BuildContext context, {
+    RouteSettings? routeSettings,
     List<AssetEntity>? selectedAssets,
     int maxAssets = 9,
     int pageSize = 80,
@@ -107,6 +114,7 @@ class AssetPicker<A, P> extends StatelessWidget {
             ),
           ),
         );
+
         final List<AssetEntity>? result = await Navigator.of(
           context,
           rootNavigator: useRootNavigator,
@@ -115,6 +123,10 @@ class AssetPicker<A, P> extends StatelessWidget {
             builder: picker,
             transitionCurve: routeCurve,
             transitionDuration: routeDuration,
+            settings: routeSettings ??
+                const RouteSettings(
+                    name: 'selector de imagenes',
+                    arguments: ScreenOrientation.portraitOnly),
           ),
         );
         return result;

@@ -11,7 +11,8 @@ class AssetPickerPageRoute<T> extends PageRoute<T> {
     required this.builder,
     this.transitionCurve = Curves.easeIn,
     this.transitionDuration = const Duration(milliseconds: 500),
-  });
+    RouteSettings? settings,
+  }) : super(settings: settings);
 
   final Widget builder;
 
