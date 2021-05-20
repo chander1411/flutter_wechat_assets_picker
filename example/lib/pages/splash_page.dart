@@ -27,6 +27,7 @@ class _SplashPageState extends State<SplashPage> {
           () {
             Navigator.of(context).pushReplacement(
               PageRouteBuilder<void>(
+                settings: RouteSettings(name: 'page route 3'),
                 pageBuilder: (_, __, ___) => const HomePage(),
                 transitionsBuilder: (
                   _,

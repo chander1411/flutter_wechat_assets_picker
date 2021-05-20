@@ -182,6 +182,7 @@ class _DirectoryFileAssetPickerState extends State<DirectoryFileAssetPicker>
               );
               final PageRouteBuilder<List<File>> pageRoute =
                   PageRouteBuilder<List<File>>(
+                settings: RouteSettings(name: 'page route 1'),
                 pageBuilder: (
                   BuildContext context,
                   Animation<double> animation,
@@ -411,6 +412,7 @@ class FileAssetPickerBuilder
       ),
     );
     final PageRouteBuilder<List<File>> pageRoute = PageRouteBuilder<List<File>>(
+      settings: RouteSettings(name: 'page route 2'),
       pageBuilder: (
         BuildContext context,
         Animation<double> animation,

@@ -52,6 +52,7 @@ class AssetPickerViewer<A, P> extends StatefulWidget {
       );
       final PageRouteBuilder<List<AssetEntity>> pageRoute =
           PageRouteBuilder<List<AssetEntity>>(
+        settings: RouteSettings(name: 'page route 4'),
         pageBuilder: (
           BuildContext context,
           Animation<double> animation,
