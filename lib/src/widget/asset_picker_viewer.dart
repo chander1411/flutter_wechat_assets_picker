@@ -3,6 +3,7 @@
 /// [Date] 2020/3/31 16:27
 ///
 import 'dart:async';
+import 'dart:html';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +34,7 @@ class AssetPickerViewer<A, P> extends StatefulWidget {
     List<AssetEntity>? selectedAssets,
     SpecialPickerType? specialPickerType,
     int? maxAssets,
+    RouteSettings? routeSettings,
   }) async {
     try {
       final Widget viewer = AssetPickerViewer<AssetEntity, AssetPathEntity>(
@@ -52,7 +54,10 @@ class AssetPickerViewer<A, P> extends StatefulWidget {
       );
       final PageRouteBuilder<List<AssetEntity>> pageRoute =
           PageRouteBuilder<List<AssetEntity>>(
-        settings: RouteSettings(name: 'page route 4'),
+        settings: routeSettings ??
+            const RouteSettings(
+                name: 'imagePreview',
+                arguments: ScreenOrientation.portraitOnly),
         pageBuilder: (
           BuildContext context,
           Animation<double> animation,

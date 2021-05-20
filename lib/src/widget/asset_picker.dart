@@ -99,6 +99,7 @@ class AssetPicker<A, P> extends StatelessWidget {
           child: AssetPicker<AssetEntity, AssetPathEntity>(
             key: Constants.pickerKey,
             builder: DefaultAssetPickerBuilderDelegate(
+              routeSettings: routeSettings,
               provider: provider,
               gridCount: gridCount,
               textDelegate: textDelegate,

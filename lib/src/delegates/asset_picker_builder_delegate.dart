@@ -451,6 +451,7 @@ class DefaultAssetPickerBuilderDelegate
     this.gridThumbSize = Constants.defaultGridThumbSize,
     this.previewThumbSize,
     this.specialPickerType,
+    this.routeSettings,
   })  : assert(
           pickerTheme == null || themeColor == null,
           'Theme and theme color cannot be set at the same time.',
@@ -466,6 +467,9 @@ class DefaultAssetPickerBuilderDelegate
           loadingIndicatorBuilder: loadingIndicatorBuilder,
           allowSpecialItemWhenEmpty: allowSpecialItemWhenEmpty,
         );
+
+  /// route settings to be able to change the orientation of the screen
+  RouteSettings? routeSettings;
 
   /// Thumbnail size in the grid.
   /// 预览时网络的缩略图大小
@@ -1172,9 +1176,11 @@ class DefaultAssetPickerBuilderDelegate
             } else {
               _selected = provider.selectedAssets;
             }
+
             final List<AssetEntity>? result =
                 await AssetPickerViewer.pushToViewer(
               context,
+              routeSettings: routeSettings,
               currentIndex: 0,
               previewAssets: _selected,
               previewThumbSize: previewThumbSize,
