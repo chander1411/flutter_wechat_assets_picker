@@ -1333,6 +1333,7 @@ class DefaultAssetPickerBuilderDelegate
           final List<AssetEntity>? result =
               await AssetPickerViewer.pushToViewer(
             context,
+            routeSettings: routeSettings,
             currentIndex: _index,
             previewAssets: _current,
             themeData: theme,

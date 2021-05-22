@@ -211,6 +211,7 @@ class _SingleAssetPageState extends State<SingleAssetPage>
               final List<AssetEntity>? result =
                   await AssetPickerViewer.pushToViewer(
                 context,
+                routeSettings: RouteSettings(name: 'jejejje'),
                 currentIndex: index,
                 previewAssets: assets,
                 themeData: AssetPicker.themeData(themeColor),
