@@ -41,6 +41,7 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
     AssetPickerConfig pickerConfig = const AssetPickerConfig(),
     bool useRootNavigator = true,
     AssetPickerPageRouteBuilder<List<AssetEntity>>? pageRouteBuilder,
+    RouteSettings? routeSettings,
   }) async {
     final PermissionState _ps = await permissionCheck();
     final DefaultAssetPickerProvider provider = DefaultAssetPickerProvider(
@@ -78,7 +79,9 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
     ).push<List<AssetEntity>>(
       pageRouteBuilder?.call(picker) ??
           AssetPickerPageRoute<List<AssetEntity>>(
-              builder: (BuildContext _) => picker),
+            settings: routeSettings,
+            builder: (BuildContext _) => picker,
+          ),
     );
     return result;
   }
