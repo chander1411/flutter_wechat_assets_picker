@@ -1,8 +1,194 @@
 # Changelog
-All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## 7.0.5
+
+### Improvements
+
+- Support compile on the Web. (#273)
+
+## 7.0.4
+
+### Improvements
+
+- Make all text delegates const.
+
+## 7.0.3
+
+### Fixes
+
+- Fix the broken semantics on iOS/macOS. (#272)
+
+## 7.0.2
+
+### Fixes
+
+- Fix wrong conditions judging when obtaining path thumbnails.
+
+## 7.0.1
+
+### Improvements
+
+- Support semantics with Japanese text delegates. (#266).
+
+### Fixes
+
+- Obtain the path thumbnail only when asset is image or video.
+
+## 7.0.0
+
+To know more about breaking changes, see [Migration Guide][].
+
+### New features
+
+- Support predictable special item display. (#264)
+- Support live photos display. (#251)
+- Expose `AssetPickerPageRoute` for customization. (#248)
+- Add full semantics support. (#232, #235, #240, #242, #243, #245, #254)
+
+### Improvements
+
+- Improve scaling with select indicators and numbers.
+- Implement the default light theme. (#234)
+
+### Fixes
+
+- Fix `LocallyAvailableBuilder` with more edge conditions. (#263)
+- Fix potentially "No elements" error with thumbnails.
+
+## 6.3.1
+
+- Improve image type determine when resolving image data.This mostly resolved the occasionally HEIC loading issue when
+  apps are running under the release mode.
+
+## 6.3.0
+
+- Support for Flutter 2.8.0, also drop supports for Flutter below 2.8.0.
+
+## 6.2.4
+
+- Improve audio item layout.
+- Improve workflows.
+- Indicate path getter more precisely.
+- Improve Arabic text delegate.
+
+## 6.2.3
+
+- Pass through `selectPredicate` to `AssetPickerViewer`. (#211)
+- Bump sdk constraints (since 6.2.1).
+
+## 6.2.2
+
+- Use `.contentUri` for video preview only on Android.
+
+## 6.2.1
+
+- Migrate to `extended_image` 5.x.
+- Use `.contentUri` constructor for `VideoPlayerController`.
+
+## 6.2.0
+
+- Introduce `shouldRevertGrid` to determine whether the assets grid should be reverted.
+- Upgrade `photo_manager` to resolve issues against `AssetEntity`s comparison.
+
+## 6.1.2
+
+- Fix limited resources refresh issue.
+- Update callers to avoid deprecated usage.
+
+## 6.1.1
+
+- Handle iCloud video more gracefully.
+
+## 6.1.0
+
+- Introduce `selectPredicate` to predicate asset when picking.
+
+## 6.0.6
+
+- Use the correct index reference with `selectedBackdrop`. (#195)
+
+## 6.0.5
+
+- Upgrade dependencies.
+
+## 6.0.4
+
+- Add French language text delegate. (Thanks to @didiosn)
+- Export "Nothing here." as a field to text delegate. (#190)
+- Fix selected backdrop not synced all the time.
+- Improve the instructions for the example.
+
+## 6.0.3
+
+- Fix path entity nullable issues with the asset grid.
+- Fix assets displaying condition missing with the iOS layout.
+
+## 6.0.2
+
+- Expose `shouldReversePreview` for `AssetPickerViewerBuilderDelegate`.
+
+## 6.0.1
+
+- Improve total count calculation with `AssetPathEntity`. (#187)
+- Obtain `AssetPathEntity.isAll` fix from `photo_manager`.
+- Documents update.
+
+## 6.0.0
+
+### New features
+
+- Sync all UI details from WeChat 8.x.
+- Integrate iCloud progress overview in previews.
+- Change the permission from the app settings when it's limited.
+- Request more assets on iOS when the permission is limited.
+- Fit the assets' grid's layout as the iOS `Photos` app (reverted and started from the bottom).
+- Add Arabic language text delegate.
+- Allow using `AssetPicker` and `AssetPickerViewer` directly with delegates.
+- Add `keepScrollOffset` feature for the `AssetPickerBuilderDelegate`.
+
+### Improvements
+
+- Items that being banned from select (reached max assets or type conflict)
+  will have a stronger color cover to indicate.
+- Video preview in the [SpecialPickerType.wechatMoment] is completely different from other previews.
+- Grid items has removed fade builder for more straight feedback after it gets loaded.
+- Better interaction when jumping between previewing assets.
+- Path entities list layout structure performance & structure improved.
+- More precise thumbnail's option for iOS.
+- Improve text scale handling. (#177)
+- Reduce font size for couple texts.
+
+To know more about breaking changes, see [Migration Guide][].
+
+## 5.5.8
+
+- Fix the viewer's select button issue with WeChat Moment on Android.
+
+## 5.5.7
+
+- Make `switchPath` method in `AssetPickerProvider` async.
+
+## 5.5.6
+
+- Add Japanese language text delegate. (Thanks to @KosukeSaigusa)
+- Fix video judge condition with WeChat Moment mode.
+- Fix wrong position for the confirm button on iOS with WeChat Moment mode.
+
+## 5.5.5
+
+- Migrate permissions check to the new API in `photo_manager`.
+
+## 5.5.4
+
+- Fix assets reduced under the WeChat Moment mode when previewing.
+
+## 5.5.3+1
+
+- Fix static analysis issue.
+
+## 5.5.3
+
+- Use `SystemUiOverlayStyle` from the provided theme first.
 
 ## 5.5.2
 
@@ -80,7 +266,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Reset to the top for the asset grid view after switching path.
 - Add ability to select assets in any position of the picker.
 - Implement mime type for image type judgement.
-- Fix disappeared GIF's indicator.
+- Fix disappeared GIFs indicator.
 
 ## 5.0.5
 
@@ -119,8 +305,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Migrate to non-nullable by default.
 - `CustomItemBuilder` -> `SpecialItemBuilder`, `CustomItemPosition` -> `SpecialItemPosition` .
 - Abstract `AssetPickerBuilderDelegate<A, P>`, `AssetPickerViewerBuilderDelegate<A, P>`,
-  `AssetPickerProvider<A, P>`, and minify the `AssetPickerViewerProvider<A>`. Support
-  custom types by generic type.
+  `AssetPickerProvider<A, P>`, and minify the `AssetPickerViewerProvider<A>`. Support custom types by generic type.
 - The `assets` param in `AssetPickerViewer.pushToViewer` is now `previewAssets` .
 
 ## 4.2.2
@@ -199,7 +384,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 2.2.0
 
-- Brand new example.
+- A brand new example.
 - Add `SortPathDelegate`.
 - Using zoom page transition for viewer.
 - Slightly add padding to viewer's assets list view.
@@ -230,7 +415,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support audio assets.
 - Support single asset mode.
 - Enlarge preview button's detector area size.
-- Fix wrong properties usage causing infinite build when the page reaches the end.
+- Fix wrong properties' usage causing infinite build when the page reaches the end.
 
 ### Breaking changes
 
@@ -259,7 +444,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## 1.5.0
 
 - Bumping flutter sdk minimum version to `1.17.0`.
-- Declare API stability and compatibility with 1.0.0 
+- Declare API stability and compatibility with 1.0.0
   ( more details at: https://github.com/flutter/flutter/wiki/Package-migration-to-1.0.0 ).
 
 ## 1.4.1
@@ -318,3 +503,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## 1.0.0
 
 - Initial release.
+
+[Migration Guide]: guides/migration_guide.md

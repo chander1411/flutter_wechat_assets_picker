@@ -2,12 +2,18 @@
 /// [Author] Alex (https://github.com/Alex525)
 /// [Date] 2020/3/31 15:39
 ///
-
-import 'package:flutter/cupertino.dart';
+// ignore_for_file: deprecated_member_use
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:photo_manager/photo_manager.dart';
 
+import '../constants/config.dart';
 import '../constants/constants.dart';
+import '../delegates/asset_picker_builder_delegate.dart';
+import '../internal/methods.dart';
+import '../internal/singleton.dart';
+import '../provider/asset_picker_provider.dart';
+import 'asset_picker_page_route.dart';
 
 enum ScreenOrientation {
   portraitOnly,
@@ -15,129 +21,93 @@ enum ScreenOrientation {
   rotating,
 }
 
-class AssetPicker<A, P> extends StatelessWidget {
-  const AssetPicker({
-    Key? key,
-    required this.builder,
-  }) : super(key: key);
+class AssetPicker<Asset, Path> extends StatefulWidget {
+  const AssetPicker({Key? key, required this.builder}) : super(key: key);
 
-  final AssetPickerBuilderDelegate<A, P> builder;
+  final AssetPickerBuilderDelegate<Asset, Path> builder;
+
+  static Future<PermissionState> permissionCheck() async {
+    final PermissionState _ps = await PhotoManager.requestPermissionExtend();
+    if (_ps != PermissionState.authorized && _ps != PermissionState.limited) {
+      throw StateError('Permission state error with $_ps.');
+    }
+    return _ps;
+  }
 
   /// Static method to push with the navigator.
   /// 跳转至选择器的静态方法
   static Future<List<AssetEntity>?> pickAssets(
     BuildContext context, {
-    RouteSettings? routeSettings,
-    List<AssetEntity>? selectedAssets,
-    int maxAssets = 9,
-    int pageSize = 80,
-    int gridThumbSize = Constants.defaultGridThumbSize,
-    int pathThumbSize = 80,
-    int gridCount = 4,
-    RequestType requestType = RequestType.image,
-    List<int>? previewThumbSize,
-    SpecialPickerType? specialPickerType,
-    Color? themeColor,
-    ThemeData? pickerTheme,
-    SortPathDelegate? sortPathDelegate,
-    AssetsPickerTextDelegate? textDelegate,
-    FilterOptionGroup? filterOptions,
-    WidgetBuilder? specialItemBuilder,
-    IndicatorBuilder? loadingIndicatorBuilder,
-    SpecialItemPosition specialItemPosition = SpecialItemPosition.none,
-    bool allowSpecialItemWhenEmpty = false,
+    AssetPickerConfig pickerConfig = const AssetPickerConfig(),
     bool useRootNavigator = true,
-    Curve routeCurve = Curves.easeIn,
-    Duration routeDuration = const Duration(milliseconds: 300),
+    AssetPickerPageRouteBuilder<List<AssetEntity>>? pageRouteBuilder,
   }) async {
-    if (maxAssets < 1) {
-      throw ArgumentError(
-        'maxAssets must be greater than 1.',
-      );
-    }
-    if (pageSize % gridCount != 0) {
-      throw ArgumentError(
-        'pageSize must be a multiple of gridCount.',
-      );
-    }
-    if (pickerTheme != null && themeColor != null) {
-      throw ArgumentError(
-        'Theme and theme color cannot be set at the same time.',
-      );
-    }
-    if (specialPickerType == SpecialPickerType.wechatMoment) {
-      if (requestType != RequestType.image) {
-        throw ArgumentError(
-          'SpecialPickerType.wechatMoment and requestType cannot be set at the same time.',
-        );
-      }
-      requestType = RequestType.common;
-    }
-    if ((specialItemBuilder == null &&
-            specialItemPosition != SpecialItemPosition.none) ||
-        (specialItemBuilder != null &&
-            specialItemPosition == SpecialItemPosition.none)) {
-      throw ArgumentError('Custom item didn\'t set properly.');
-    }
-
-    try {
-      final bool isPermissionGranted = await PhotoManager.requestPermission();
-      if (isPermissionGranted) {
-        final DefaultAssetPickerProvider provider = DefaultAssetPickerProvider(
-          maxAssets: maxAssets,
-          pageSize: pageSize,
-          pathThumbSize: pathThumbSize,
-          selectedAssets: selectedAssets,
-          requestType: requestType,
-          sortPathDelegate: sortPathDelegate,
-          filterOptions: filterOptions,
-          routeDuration: routeDuration,
-        );
-        final Widget picker =
-            ChangeNotifierProvider<DefaultAssetPickerProvider>.value(
-          value: provider,
-          child: AssetPicker<AssetEntity, AssetPathEntity>(
-            key: Constants.pickerKey,
-            builder: DefaultAssetPickerBuilderDelegate(
-              routeSettings: routeSettings,
-              provider: provider,
-              gridCount: gridCount,
-              textDelegate: textDelegate,
-              themeColor: themeColor,
-              pickerTheme: pickerTheme,
-              gridThumbSize: gridThumbSize,
-              previewThumbSize: previewThumbSize,
-              specialPickerType: specialPickerType,
-              specialItemPosition: specialItemPosition,
-              specialItemBuilder: specialItemBuilder,
-              loadingIndicatorBuilder: loadingIndicatorBuilder,
-              allowSpecialItemWhenEmpty: allowSpecialItemWhenEmpty,
-            ),
-          ),
-        );
-
-        final List<AssetEntity>? result = await Navigator.of(
-          context,
-          rootNavigator: useRootNavigator,
-        ).push<List<AssetEntity>>(
+    final PermissionState _ps = await permissionCheck();
+    final DefaultAssetPickerProvider provider = DefaultAssetPickerProvider(
+      maxAssets: pickerConfig.maxAssets,
+      pageSize: pickerConfig.pageSize,
+      pathThumbnailSize: pickerConfig.pathThumbnailSize,
+      selectedAssets: pickerConfig.selectedAssets,
+      requestType: pickerConfig.requestType,
+      sortPathDelegate: pickerConfig.sortPathDelegate,
+      filterOptions: pickerConfig.filterOptions,
+    );
+    final Widget picker = AssetPicker<AssetEntity, AssetPathEntity>(
+      key: Singleton.pickerKey,
+      builder: DefaultAssetPickerBuilderDelegate(
+        provider: provider,
+        initialPermission: _ps,
+        gridCount: pickerConfig.gridCount,
+        pickerTheme: pickerConfig.pickerTheme,
+        gridThumbnailSize: pickerConfig.gridThumbnailSize,
+        previewThumbnailSize: pickerConfig.previewThumbnailSize,
+        specialPickerType: pickerConfig.specialPickerType,
+        specialItemPosition: pickerConfig.specialItemPosition,
+        specialItemBuilder: pickerConfig.specialItemBuilder,
+        loadingIndicatorBuilder: pickerConfig.loadingIndicatorBuilder,
+        selectPredicate: pickerConfig.selectPredicate,
+        shouldRevertGrid: pickerConfig.shouldRevertGrid,
+        textDelegate: pickerConfig.textDelegate,
+        themeColor: pickerConfig.themeColor,
+        locale: Localizations.maybeLocaleOf(context),
+      ),
+    );
+    final List<AssetEntity>? result = await Navigator.of(
+      context,
+      rootNavigator: useRootNavigator,
+    ).push<List<AssetEntity>>(
+      pageRouteBuilder?.call(picker) ??
           AssetPickerPageRoute<List<AssetEntity>>(
-            builder: picker,
-            transitionCurve: routeCurve,
-            transitionDuration: routeDuration,
-            settings: routeSettings ??
-                const RouteSettings(
-                    name: 'selector de imagenes',
-                    arguments: ScreenOrientation.portraitOnly),
+              builder: (BuildContext _) => picker),
+    );
+    return result;
+  }
+
+  /// Call the picker with provided [delegate].
+  /// 通过指定的 [delegate] 调用选择器
+  static Future<List<Asset>?> pickAssetsWithDelegate<Asset, Path,
+      PickerProvider extends AssetPickerProvider<Asset, Path>>(
+    BuildContext context, {
+    required AssetPickerBuilderDelegate<Asset, Path> delegate,
+    bool useRootNavigator = true,
+    AssetPickerPageRouteBuilder<List<Asset>>? pageRouteBuilder,
+  }) async {
+    await permissionCheck();
+
+    final Widget picker = AssetPicker<Asset, Path>(
+      key: Singleton.pickerKey,
+      builder: delegate,
+    );
+    final List<Asset>? result = await Navigator.of(
+      context,
+      rootNavigator: useRootNavigator,
+    ).push<List<Asset>>(
+      pageRouteBuilder?.call(picker) ??
+          AssetPickerPageRoute<List<Asset>>(
+            builder: (BuildContext _) => picker,
           ),
-        );
-        return result;
-      } else {
-        return null;
-      }
-    } catch (e) {
-      realDebugPrint('Error when calling assets picker: $e');
-      return null;
-    }
+    );
+    return result;
   }
 
   /// Register observe callback with assets changes.
@@ -170,16 +140,54 @@ class AssetPicker<A, P> extends StatelessWidget {
 
   /// Build a dark theme according to the theme color.
   /// 通过主题色构建一个默认的暗黑主题
-  static ThemeData themeData(Color themeColor) {
+  static ThemeData themeData(Color? themeColor, {bool light = false}) {
+    themeColor ??= defaultThemeColorWeChat;
+    if (light) {
+      return ThemeData.light().copyWith(
+        primaryColor: Colors.grey[50],
+        primaryColorLight: Colors.grey[50],
+        primaryColorDark: Colors.grey[50],
+        canvasColor: Colors.grey[100],
+        scaffoldBackgroundColor: Colors.grey[50],
+        bottomAppBarColor: Colors.grey[50],
+        cardColor: Colors.grey[50],
+        highlightColor: Colors.transparent,
+        toggleableActiveColor: themeColor,
+        textSelectionTheme: TextSelectionThemeData(
+          cursorColor: themeColor,
+          selectionColor: themeColor.withAlpha(100),
+          selectionHandleColor: themeColor,
+        ),
+        indicatorColor: themeColor,
+        appBarTheme: const AppBarTheme(
+          systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarBrightness: Brightness.light,
+            statusBarIconBrightness: Brightness.dark,
+          ),
+          elevation: 0,
+        ),
+        buttonTheme: ButtonThemeData(buttonColor: themeColor),
+        colorScheme: ColorScheme(
+          primary: Colors.grey[50]!,
+          primaryVariant: Colors.grey[50]!,
+          secondary: themeColor,
+          secondaryVariant: themeColor,
+          background: Colors.grey[50]!,
+          surface: Colors.grey[50]!,
+          brightness: Brightness.light,
+          error: const Color(0xffcf6679),
+          onPrimary: Colors.white,
+          onSecondary: Colors.white,
+          onSurface: Colors.black,
+          onBackground: Colors.black,
+          onError: Colors.white,
+        ),
+      );
+    }
     return ThemeData.dark().copyWith(
-      buttonColor: themeColor,
-      brightness: Brightness.dark,
       primaryColor: Colors.grey[900],
-      primaryColorBrightness: Brightness.dark,
       primaryColorLight: Colors.grey[900],
       primaryColorDark: Colors.grey[900],
-      accentColor: themeColor,
-      accentColorBrightness: Brightness.dark,
       canvasColor: Colors.grey[850],
       scaffoldBackgroundColor: Colors.grey[900],
       bottomAppBarColor: Colors.grey[900],
@@ -193,9 +201,13 @@ class AssetPicker<A, P> extends StatelessWidget {
       ),
       indicatorColor: themeColor,
       appBarTheme: const AppBarTheme(
-        brightness: Brightness.dark,
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarBrightness: Brightness.dark,
+          statusBarIconBrightness: Brightness.light,
+        ),
         elevation: 0,
       ),
+      buttonTheme: ButtonThemeData(buttonColor: themeColor),
       colorScheme: ColorScheme(
         primary: Colors.grey[900]!,
         primaryVariant: Colors.grey[900]!,
@@ -215,7 +227,52 @@ class AssetPicker<A, P> extends StatelessWidget {
   }
 
   @override
+  AssetPickerState<Asset, Path> createState() =>
+      AssetPickerState<Asset, Path>();
+}
+
+class AssetPickerState<Asset, Path> extends State<AssetPicker<Asset, Path>>
+    with TickerProviderStateMixin, WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance!.addObserver(this);
+    AssetPicker.registerObserve(_onLimitedAssetsUpdated);
+    widget.builder.initState(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+      PhotoManager.requestPermissionExtend().then(
+        (PermissionState ps) => widget.builder.permission.value = ps,
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance!.removeObserver(this);
+    AssetPicker.unregisterObserve(_onLimitedAssetsUpdated);
+    widget.builder.dispose();
+    super.dispose();
+  }
+
+  Future<void> _onLimitedAssetsUpdated(MethodCall call) async {
+    await widget.builder.onAssetsChanged(
+      call,
+      (VoidCallback fn) {
+        fn();
+        if (mounted) {
+          setState(() {});
+        }
+      },
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return builder.build(context);
+    return widget.builder.build(context);
   }
 }
