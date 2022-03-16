@@ -844,3 +844,101 @@ class FrenchAssetPickerTextDelegate extends AssetPickerTextDelegate {
   @override
   String get sUnitAssetCountLabel => 'quantité';
 }
+
+/// [AssetPickerTextDelegate] implements with English.
+/// English Localization
+class SpanishAssetPickerTextDelegate extends AssetPickerTextDelegate {
+  const SpanishAssetPickerTextDelegate();
+
+  @override
+  String get languageCode => 'es';
+
+  @override
+  String get confirm => 'Confirmar';
+
+  @override
+  String get cancel => 'Cancelar';
+
+  @override
+  String get edit => 'Editar';
+
+  @override
+  String get gifIndicator => 'GIF';
+
+  @override
+  String get loadFailed => 'Carga fallida';
+
+  @override
+  String get original => 'Original';
+
+  @override
+  String get preview => 'Vista previa';
+
+  @override
+  String get select => 'Seleccionar';
+
+  @override
+  String get emptyList => 'Lista vacía';
+
+  @override
+  String get unSupportedAssetType => 'Tipo de activo HEIC no admitido.';
+
+  @override
+  String get unableToAccessAll =>
+      'No se puede acceder a todos los archivos en el dispositivo';
+
+  @override
+  String get viewingLimitedAssetsTip =>
+      'Solo vea los archivos y los álbumes a los que puede acceder la aplicación.';
+
+  @override
+  String get changeAccessibleLimitedAssets =>
+      'Haga clic para actualizar los archivos accesibles';
+
+  @override
+  String get accessAllTip =>
+      'La aplicación solo puede acceder a algunos archivos en el dispositivo. '
+      'Vaya a la configuración del sistema y permita que la aplicación acceda a todos los archivos en el dispositivo.';
+
+  @override
+  String get goToSystemSettings => 'Vaya a la configuración del sistema';
+
+  @override
+  String get accessLimitedAssets => 'Continuar con acceso limitado';
+
+  @override
+  String get accessiblePathName => 'Archivos accesibles';
+
+  @override
+  String get sTypeAudioLabel => 'Audio';
+
+  @override
+  String get sTypeImageLabel => 'Imagen';
+
+  @override
+  String get sTypeVideoLabel => 'Video';
+
+  @override
+  String get sTypeOtherLabel => 'Otros archivos';
+
+  @override
+  String get sActionPlayHint => 'reproducir';
+
+  @override
+  String get sActionPreviewHint => 'vista previa';
+
+  @override
+  String get sActionSelectHint => 'seleccionar';
+
+  @override
+  String get sActionSwitchPathLabel => 'cambiar de ruta';
+
+  @override
+  String get sActionUseCameraHint => 'usar camara';
+
+  @override
+  String get sNameDurationLabel => 'duración';
+
+  @override
+  String get sUnitAssetCountLabel => 'cantidad';
+}
