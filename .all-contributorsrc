@@ -102,6 +102,79 @@
       "contributions": [
         "translation"
       ]
+    },
+    {
+      "login": "NaikSoftware",
+      "name": "Nickolay Savchenko",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4218994?v=4",
+      "profile": "https://github.com/NaikSoftware",
+      "contributions": [
+        "design"
+      ]
+    },
+    {
+      "login": "KosukeSaigusa",
+      "name": "Kosuke Saigusa",
+      "avatar_url": "https://avatars.githubusercontent.com/u/13669049?v=4",
+      "profile": "https://github.com/KosukeSaigusa",
+      "contributions": [
+        "translation"
+      ]
+    },
+    {
+      "login": "Jon-Millent",
+      "name": "三闻书店",
+      "avatar_url": "https://avatars.githubusercontent.com/u/17584565?v=4",
+      "profile": "https://github.com/Jon-Millent",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "didiosn",
+      "name": "DidiosFaust",
+      "avatar_url": "https://avatars.githubusercontent.com/u/15895051?v=4",
+      "profile": "https://github.com/didiosn",
+      "contributions": [
+        "translation"
+      ]
+    },
+    {
+      "login": "ConanXie",
+      "name": "xiejie",
+      "avatar_url": "https://avatars.githubusercontent.com/u/10040846?v=4",
+      "profile": "https://github.com/ConanXie",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "maxzod",
+      "name": "Ahmed Masoud ",
+      "avatar_url": "https://avatars.githubusercontent.com/u/47630729?v=4",
+      "profile": "https://github.com/maxzod",
+      "contributions": [
+        "translation"
+      ]
+    },
+    {
+      "login": "luomo-pro",
+      "name": "luomo-pro",
+      "avatar_url": "https://avatars.githubusercontent.com/u/41097395?v=4",
+      "profile": "https://github.com/luomo-pro",
+      "contributions": [
+        "a11y",
+        "bug"
+      ]
+    },
+    {
+      "login": "paigupai",
+      "name": "paigupai",
+      "avatar_url": "https://avatars.githubusercontent.com/u/44311361?v=4",
+      "profile": "https://github.com/paigupai",
+      "contributions": [
+        "translation"
+      ]
     }
   ],
   "contributorsPerLine": 7,

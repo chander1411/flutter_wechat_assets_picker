@@ -5,23 +5,20 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:photo_manager/photo_manager.dart';
+import 'package:video_player/video_player.dart';
 
-import 'package:wechat_assets_picker/src/constants/constants.dart';
+import '../../constants/extensions.dart';
+import '../../internal/methods.dart';
+import '../../internal/singleton.dart';
+import '../scale_text.dart';
 
 class AudioPageBuilder extends StatefulWidget {
-  const AudioPageBuilder({
-    Key? key,
-    required this.asset,
-    required this.state,
-  }) : super(key: key);
+  const AudioPageBuilder({Key? key, required this.asset}) : super(key: key);
 
   /// Asset currently displayed.
   /// 展示的资源
   final AssetEntity asset;
-
-  /// [State] for asset picker viewer.
-  /// 资源查看器的状态 [State]
-  final AssetPickerViewerState<AssetEntity, AssetPathEntity> state;
 
   @override
   State<StatefulWidget> createState() => _AudioPageBuilderState();
@@ -103,12 +100,20 @@ class _AudioPageBuilderState extends State<AudioPageBuilder> {
     durationStreamController.add(_controller.value.position);
   }
 
+  void playButtonCallback() {
+    if (isPlaying) {
+      _controller.pause();
+    } else {
+      _controller.play();
+    }
+  }
+
   /// Title widget.
   /// 标题组件
   Widget get titleWidget {
-    return Text(
+    return ScaleText(
       widget.asset.title ?? '',
-      style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.normal),
+      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.normal),
     );
   }
 
@@ -116,22 +121,16 @@ class _AudioPageBuilderState extends State<AudioPageBuilder> {
   /// 控制音频播放或暂停的按钮
   Widget get audioControlButton {
     return GestureDetector(
-      onTap: () {
-        if (isPlaying) {
-          _controller.pause();
-        } else {
-          _controller.play();
-        }
-      },
+      onTap: playButtonCallback,
       child: Container(
-        margin: const EdgeInsets.all(20.0),
+        margin: const EdgeInsets.all(20),
         decoration: const BoxDecoration(
           boxShadow: <BoxShadow>[BoxShadow(color: Colors.black12)],
           shape: BoxShape.circle,
         ),
         child: Icon(
           isPlaying ? Icons.pause_circle_outline : Icons.play_circle_filled,
-          size: 70.0,
+          size: 70,
         ),
       ),
     );
@@ -140,18 +139,23 @@ class _AudioPageBuilderState extends State<AudioPageBuilder> {
   /// Duration indicator for the audio.
   /// 音频的时长指示器
   Widget get durationIndicator {
+    final String Function(Duration) durationBuilder =
+        Singleton.textDelegate.durationIndicatorBuilder;
+    final String Function(Duration) semanticsDurationBuilder =
+        Singleton.textDelegate.semanticsTextDelegate.durationIndicatorBuilder;
     return StreamBuilder<Duration>(
       initialData: Duration.zero,
       stream: durationStreamController.stream,
       builder: (BuildContext _, AsyncSnapshot<Duration> data) {
-        return Text(
-          '${Constants.textDelegate.durationIndicatorBuilder(data.data!)}'
-          ' / '
-          '${Constants.textDelegate.durationIndicatorBuilder(assetDuration)}',
+        return ScaleText(
+          '${durationBuilder(data.data!)} / ${durationBuilder(assetDuration)}',
           style: const TextStyle(
-            fontSize: 20.0,
+            fontSize: 20,
             fontWeight: FontWeight.normal,
           ),
+          semanticsLabel: '${semanticsDurationBuilder(data.data!)}'
+              ' / '
+              '${semanticsDurationBuilder(assetDuration)}',
         );
       },
     );
@@ -159,18 +163,23 @@ class _AudioPageBuilderState extends State<AudioPageBuilder> {
 
   @override
   Widget build(BuildContext context) {
-    return ColoredBox(
-      color: context.themeData.backgroundColor,
-      child: isLoaded
-          ? Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                titleWidget,
-                audioControlButton,
-                durationIndicator,
-              ],
-            )
-          : const SizedBox.shrink(),
+    return Semantics(
+      onLongPress: playButtonCallback,
+      onLongPressHint:
+          Singleton.textDelegate.semanticsTextDelegate.sActionPlayHint,
+      child: ColoredBox(
+        color: context.themeData.backgroundColor,
+        child: isLoaded
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  titleWidget,
+                  audioControlButton,
+                  durationIndicator,
+                ],
+              )
+            : const SizedBox.shrink(),
+      ),
     );
   }
 }
