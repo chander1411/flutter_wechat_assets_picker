@@ -47,6 +47,8 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
     super.dispose();
   }
 
+  final GlobalKey<ExtendedImageEditorState> editorKey =
+      GlobalKey<ExtendedImageEditorState>();
   Future<void> _initializeLivePhoto() async {
     final File? file;
     if (_isOriginal) {
@@ -93,17 +95,14 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
         thumbnailSize: widget.previewThumbnailSize,
       ),
       fit: BoxFit.contain,
-      mode: ExtendedImageMode.gesture,
+      mode: ExtendedImageMode.editor,
+      extendedImageEditorKey: editorKey,
       onDoubleTap: widget.delegate.updateAnimation,
-      initGestureConfigHandler: (ExtendedImageState state) {
-        return GestureConfig(
-          initialScale: 1.0,
-          minScale: 1.0,
-          maxScale: 3.0,
-          animationMinScale: 0.6,
-          animationMaxScale: 4.0,
-          cacheGesture: false,
-          inPageView: true,
+      initEditorConfigHandler: (ExtendedImageState? state) {
+        return EditorConfig(
+          maxScale: 8.0,
+          cropRectPadding: const EdgeInsets.all(20.0),
+          hitTestSize: 20.0,
         );
       },
       loadStateChanged: (ExtendedImageState state) {
